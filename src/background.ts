@@ -1,27 +1,42 @@
 // This file is ran as a background script
-import { TabGroup } from 'chrome';
 
+console.log("Hello from background script!");
+const map = new Map();
+map.set("stackoverflow.com", "StackOverFlow");
+map.set("developer.chrome.com", "Chrome API");
+map.set("github.com", "GitHub");
 
-console.log("Hello from background script!")
-chrome.tabs.onUpdated.addListener(function(tabId, props){
-    
-})
+chrome.tabs.onUpdated.addListener(function (tabId, props) {
+  console.log("tabs updated");
+  const host = extractDomain(props.url);
+  console.log(host)
+  if (map.has(host)) {
+    console.log(props.url);
+    groupGitLab(tabId, map.get(host));
+  }
+});
 
-
-function isExistingGroup() {
-    var isExistedGitlab
-    const queryInfo = {
-        title: "Gitlab"
+function groupGitLab(tabId: number, groupTitle: string) {
+  const queryInfo = {
+    title: groupTitle
+  };
+  chrome.tabGroups.query(queryInfo, (result) => {
+    if (result.length == 0) {
+      chrome.tabs.group({ tabIds: tabId }, (groupId) => {
+        chrome.tabGroups.update(groupId, { title: groupTitle });
+      });
+    } else {
+      const groupId = result[0].id;
+      chrome.tabs.group({ tabIds: tabId, groupId: groupId });
     }
-    chrome.tabGroups.query(queryInfo, function(groups) {
-        isExistedGitlab = groups[0]
-    })
-
-    return isExistedGitlab as TabGroup
+  });
 }
 
-function groupGitlab(tabId: number) {
-    if (isExistingGroup() {
-
-    }
+function extractDomain(url: string | undefined) {
+  if (typeof url !== 'undefined') {
+    const domain = url.replace("http://", "").split(/[/?#]/);
+    return domain[0]
+  } else {
+    return  "sad"
+  }
 }
