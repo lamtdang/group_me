@@ -1,11 +1,9 @@
-# Chrome Extension boilerplate created with React Typescript
+#Group Me: An Automatic Google Chrome Tab-Grouping Extension 
 
 ## Getting started
 
 
-```
-$ npx degit https://github.com/sivertschou/react-typescript-chrome-extension-boilerplate.git <project-name>
-```
+Clone the project from Github 
 
 Navigate to the project directory and install the dependencies.
 
