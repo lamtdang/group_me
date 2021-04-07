@@ -8,8 +8,16 @@ map.set("github.com", "GitHub");
 
 chrome.tabs.onUpdated.addListener(function (tabId, props) {
   console.log("tabs updated");
-  const host = extractDomain(props.url);
-  console.log(host)
+
+  console.log({props})
+
+  if (! props.url) {
+      return;
+  }
+  
+  const host = new URL(props.url).hostname
+//   const host = extractDomain(props.url);
+  console.log({host})
   if (map.has(host)) {
     console.log(props.url);
     groupGitLab(tabId, map.get(host));
@@ -34,7 +42,7 @@ function groupGitLab(tabId: number, groupTitle: string) {
 
 function extractDomain(url: string | undefined) {
   if (typeof url !== 'undefined') {
-    const domain = url.replace("http://", "").split(/[/?#]/);
+    const domain = url.replace("https?://", "").split(/[/?#]/);
     return domain[0]
   } else {
     return  "sad"
