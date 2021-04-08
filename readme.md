@@ -1,4 +1,4 @@
-#Group Me: An Automatic Google Chrome Tab-Grouping Extension 
+# Group Me: An Automatic Google Chrome Tab-Grouping Extension
 
 ## Getting started
 
