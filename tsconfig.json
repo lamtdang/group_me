@@ -10,9 +10,11 @@
         "target": "es5",
         "allowJs": true,
         "jsx": "react",
+        "esModuleInterop": true
     },
     "include": [
         "./src/**/*",
         "src/ui/custom.d.ts"
-    ]
+    ],
+    "exclude": ["node_modules"]
 }
