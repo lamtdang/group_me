@@ -1,5 +1,5 @@
 {
-  "name": "Group Me",
+  "name": "group_me",
   "version": "0.0.1",
   "description": "Tab Grouping Extension that allows Users to group tabs based on their URL patterns",
   "manifest_version": 3,

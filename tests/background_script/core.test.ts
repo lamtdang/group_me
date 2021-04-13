@@ -1,4 +1,4 @@
-import { isMatchingURLPattern } from "../main/core";
+import { isMatchingURLPattern } from "../../src/background_script/core";
 
 describe("Match Without Wildcard", () => {
   test("Match_SameDomain_ReturnTrue", () => {
@@ -46,26 +46,56 @@ describe("Match Without Wildcard", () => {
 });
 
 describe("Match With Wildcard", () => {
-  test("Match_InvalidStart_ReturnException", () => {
+  test("Match_Start_Return_True", () => {
     const url = "example.com";
     const pattern = "*.com";
-    const expectMatch = () => isMatchingURLPattern(pattern, url);
-    expect(expectMatch).toThrow("Pattern cannot start (or end) with \"*\"");
-    expect(expectMatch).toThrow(SyntaxError)
+    const result = isMatchingURLPattern(pattern, url);
+    expect(result).toBe(true);
   });
-  test("Match_InvalidEnd_ReturnException", () => {
+  test("Match_End_Return_True_Case_1", () => {
     const url = "example.com";
     const pattern = "example.*";
-    const expectMatch = () => isMatchingURLPattern(pattern, url);
-    expect(expectMatch).toThrowError("Pattern cannot start (or end) with \"*\"");
-    expect(expectMatch).toThrow(SyntaxError)
+    const result = isMatchingURLPattern(pattern, url);
+    expect(result).toBe(true);
   });
-  test("Match_MiddleWildcard_ReturnTrue", () => { 
+  test("Match_End_Return_True_Case_2", () => {
+    const url = "example.com";
+    const pattern = "example*";
+    const result = isMatchingURLPattern(pattern, url);
+    expect(result).toBe(true);
+  });
+  test("Match_MiddleWildcard_ReturnTrue_Case_1", () => { 
     const url = "lamtdang.example.com/abc";
     const pattern = "lamtdang.*.com";
     const expectMatch = isMatchingURLPattern(pattern, url);
-    expect(expectMatch).toBeTruthy();
+    expect(expectMatch).toBe(true);
   });
+  test("Match_MiddleWildcard_ReturnTrue_Case_2", () => { 
+    const url = "lamtdangexample.com/abc";
+    const pattern = "lamtdang*.com";
+    const expectMatch = isMatchingURLPattern(pattern, url);
+    expect(expectMatch).toBe(true);
+  });
+  test("Match_MiddleWildcard_ReturnFalse", () => {
+    const url = "lamtdangexample.com/abc";
+    const pattern = "lamtdang.*.com";
+    const expectMatch = isMatchingURLPattern(pattern, url);
+    expect(expectMatch).toBe(false);
+  });
+  test("Multiple_Wildcard_Sign_Case_1", () => { 
+    const url = "lamtdang.example.com/abc";
+    const pattern = "*.example.com/*";
+    const expectMatch = isMatchingURLPattern(pattern, url);
+    expect(expectMatch).toBe(true);
+  });
+
+  test("Multiple_Wildcard_Sign_Case_2", () => { 
+    const url = "api.ahihiexample.com/abc";
+    const pattern = "api.*example.com/*";
+    const expectMatch = isMatchingURLPattern(pattern, url);
+    expect(expectMatch).toBe(true);
+  });
+
   test("Match_PathKeyword_ReturnTrue", () => { 
     const url = "lamtdang.example.com/github";
     const pattern = "github";
