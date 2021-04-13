@@ -14,7 +14,8 @@
     },
     "include": [
         "./src/**/*",
-        "src/ui/custom.d.ts"
+        "src/ui/custom.d.ts",
+        "tests/*"
     ],
     "exclude": ["node_modules"]
 }
