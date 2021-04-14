@@ -1,5 +1,7 @@
 // This file is ran as a background script
 
+import Group from "./group"
+
 console.log("Hello from background script!");
 const map = new Map();
 map.set("stackoverflow.com", "StackOverFlow");
@@ -17,23 +19,20 @@ chrome.tabs.onUpdated.addListener(function (tabId, props) {
   }
 });
 
-function groupTabs(tabId: number, groupTitle: string) {
+async function groupTabs(tabId: number, groupTitle: string) {
   const queryInfo = {
     title: groupTitle
   };
-  chrome.tabGroups.query(queryInfo, (result) => {
-    if (result.length == 0) {
-      chrome.tabs.group({ tabIds: tabId }, (groupId) => {
-        chrome.tabGroups.update(groupId, { title: groupTitle });
-      });
-    } else {
-      const groupId = result[0].id;
-      chrome.tabs.group({ tabIds: tabId, groupId: groupId });
-    }
-  });
+
+  let group = await Group.first(queryInfo)
+
+  if (! group) {
+    group = await Group.create({tabId, title: groupTitle})
+  } else {
+    chrome.tabs.group({tabIds: tabId, groupId: group.id})
+  }
+
 
 }
-
-
 
 
