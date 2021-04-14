@@ -1,38 +1,38 @@
 // This file is ran as a background script
 
-import Group from "./group"
+import Group from "./group";
+import { db } from "./dexie";
 
 console.log("Hello from background script!");
-const map = new Map();
-map.set("stackoverflow.com", "StackOverFlow");
-map.set("developer.chrome.com", "Chrome API");
-map.set("github.com", "GitHub");
+
 
 chrome.tabs.onUpdated.addListener(function (tabId, props) {
-  if (! props.url) {
+  db.patterns.toArray().then((dbData) => {
+    let patternMap: Map<string, string> = new Map(
+      dbData.map((i): [string, string] => [i.pattern, i.group])
+    );
+
+    if (!props.url) {
       return;
-  }
-  
-  const host = new URL(props.url).hostname
-  if (map.has(host)) {
-    groupTabs(tabId, map.get(host));
-  }
+    }
+
+    const host = new URL(props.url).hostname;
+    if (patternMap.has(host)) {
+      groupTabs(tabId, patternMap.get(host)!);
+    }
+  });
 });
 
-async function groupTabs(tabId: number, groupTitle: string) {
+async function groupTabs(tabId: number, title: string) {
   const queryInfo = {
-    title: groupTitle
+    title,
   };
 
-  let group = await Group.first(queryInfo)
+  let group = await Group.first(queryInfo);
 
-  if (! group) {
-    group = await Group.create({tabId, title: groupTitle})
+  if (!group) {
+    group = await Group.create({ tabId, title });
   } else {
-    chrome.tabs.group({tabIds: tabId, groupId: group.id})
+    chrome.tabs.group({ tabIds: tabId, groupId: group.id });
   }
-
-
 }
-
-
