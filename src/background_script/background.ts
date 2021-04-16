@@ -1,26 +1,22 @@
 // This file is ran as a background script
 
 import Group from "./group";
-import { db } from "./dexie";
+import { database } from "./database";
 
 console.log("Hello from background script!");
 
+chrome.tabs.onUpdated.addListener(async function (tabId, props) {
 
-chrome.tabs.onUpdated.addListener(function (tabId, props) {
-  db.patterns.toArray().then((dbData) => {
-    let patternMap: Map<string, string> = new Map(
-      dbData.map((i): [string, string] => [i.pattern, i.group])
-    );
+  if (! props.url) {
+    return;
+  }
 
-    if (!props.url) {
-      return;
-    }
+  let settingsMap = await database.patternsMap();
+  const host = new URL(props.url).hostname;
 
-    const host = new URL(props.url).hostname;
-    if (patternMap.has(host)) {
-      groupTabs(tabId, patternMap.get(host)!);
-    }
-  });
+  if (settingsMap.has(host)) {
+    groupTabs(tabId, settingsMap.get(host)!.group);
+  }
 });
 
 async function groupTabs(tabId: number, title: string) {
