@@ -1,5 +1,21 @@
 .App {
   text-align: center;
+  min-width: 350px;
+}
+
+.Add-style {
+  align-items: center;
+  /* display: flex; */
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.mb-10 {
+  margin-bottom: 10px !important;
+}
+
+.mt-10 {
+  margin-top: 10px !important;
 }
 
 .App-logo {

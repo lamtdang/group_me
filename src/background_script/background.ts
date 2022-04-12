@@ -3,17 +3,33 @@
 import Group from "./group"
 
 console.log("Hello from background script!");
-const map = new Map();
-map.set("stackoverflow.com", "StackOverFlow");
-map.set("developer.chrome.com", "Chrome API");
-map.set("github.com", "GitHub");
+var map = new Map();
+// map.set("www.youtube.com", "test")
+
+chrome.storage.local.get('groupme', (result) => {
+  console.log('console', new Map(JSON.parse(result.groupme)))
+  map = new Map(JSON.parse(result.groupme))
+}
+)
+
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+  chrome.storage.local.get('groupme', (result) => {
+    console.log('console', new Map(JSON.parse(result.groupme)))
+    map = new Map(JSON.parse(result.groupme))
+  })
+  console.log(map)
+});
 
 chrome.tabs.onUpdated.addListener(function (tabId, props) {
   if (! props.url) {
       return;
   }
   
-  const host = new URL(props.url).hostname
+  var host = new URL(props.url).hostname
+  if (host.includes('www.')){
+    host = host.substring(4)
+  }
+  console.log('host', host)
   if (map.has(host)) {
     groupTabs(tabId, map.get(host));
   }
@@ -25,7 +41,6 @@ async function groupTabs(tabId: number, groupTitle: string) {
   };
 
   let group = await Group.first(queryInfo)
-
   if (! group) {
     group = await Group.create({tabId, title: groupTitle})
   } else {
