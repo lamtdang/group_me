@@ -32,6 +32,8 @@ chrome.tabs.onUpdated.addListener(function (tabId, props) {
   console.log('host', host)
   if (map.has(host)) {
     groupTabs(tabId, map.get(host));
+  } else {
+    chrome.tabs.ungroup(tabId)
   }
 });
 

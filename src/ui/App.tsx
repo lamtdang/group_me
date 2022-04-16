@@ -32,7 +32,7 @@ const TabPanel = (props: TabPanelProps) => {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 0 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -74,8 +74,8 @@ const App = () => {
   }, [])
 
   React.useEffect(() => {
-    setGroupNameList(Array.from(urlGroupMap.keys()))
-    setUrlPatternList(Array.from(urlGroupMap.values()))
+    setGroupNameList(Array.from(urlGroupMap.values()))
+    setUrlPatternList(Array.from(urlGroupMap.keys()))
   }, [urlGroupMap])
 
   return (
